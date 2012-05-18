@@ -3,52 +3,37 @@
 //  Battenberg
 //
 //  Created by Matthew Carlin on 3/19/12.
-//  Copyright __MyCompanyName__ 2012. All rights reserved.
+//  Copyright Expression Games 2012. All rights reserved.
 //
 
 #import "cocos2d.h"
 
 #import "AppDelegate.h"
 #import "GameConfig.h"
-#import "HelloWorldLayer.h"
+#import "TitleLayer.h"
 #import "RootViewController.h"
 
 @implementation AppDelegate
 
 @synthesize window;
 
-- (void) removeStartupFlicker
-{
-	//
-	// THIS CODE REMOVES THE STARTUP FLICKER
-	//
-	// Uncomment the following code if you Application only supports landscape mode
-	//
-#if GAME_AUTOROTATION == kGameAutorotationUIViewController
-	
-	//	CC_ENABLE_DEFAULT_GL_STATES();
-	//	CCDirector *director = [CCDirector sharedDirector];
-	//	CGSize size = [director winSize];
-	//	CCSprite *sprite = [CCSprite spriteWithFile:@"Default.png"];
-	//	sprite.position = ccp(size.width/2, size.height/2);
-	//	sprite.rotation = -90;
-	//	[sprite visit];
-	//	[[director openGLView] swapBuffers];
-	//	CC_ENABLE_DEFAULT_GL_STATES();
-	
-#endif // GAME_AUTOROTATION == kGameAutorotationUIViewController	
-}
-
 - (void) applicationDidFinishLaunching:(UIApplication*)application
 {
+    // guarantee display of the splash screen by sleeping once the app
+    // has finished launching
+    //sleep(1);
+    
+    // it's the anthem, seed the damned random
+    srand((unsigned)time(0));
+    
 	// Init the window
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
 	// Try to use CADisplayLink director
 	// if it fails (SDK < 3.1) use the default director
-	if( ! [CCDirector setDirectorType:kCCDirectorTypeDisplayLink] )
-		[CCDirector setDirectorType:kCCDirectorTypeDefault];
-	
+	//if( ! [CCDirector setDirectorType:kCCDirectorTypeDisplayLink] )
+	//	[CCDirector setDirectorType:kCCDirectorTypeDefault];
+    [CCDirector setDirectorType:kCCDirectorTypeDefault];
 	
 	CCDirector *director = [CCDirector sharedDirector];
 	
@@ -69,27 +54,8 @@
 	
 	// attach the openglView to the director
 	[director setOpenGLView:glView];
-	
-//	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
-//	if( ! [director enableRetinaDisplay:YES] )
-//		CCLOG(@"Retina Display Not supported");
-	
-	//
-	// VERY IMPORTANT:
-	// If the rotation is going to be controlled by a UIViewController
-	// then the device orientation should be "Portrait".
-	//
-	// IMPORTANT:
-	// By default, this template only supports Landscape orientations.
-	// Edit the RootViewController.m file to edit the supported orientations.
-	//
-#if GAME_AUTOROTATION == kGameAutorotationUIViewController
-	[director setDeviceOrientation:kCCDeviceOrientationPortrait];
-#else
-	[director setDeviceOrientation:kCCDeviceOrientationLandscapeLeft];
-#endif
-	
-	[director setAnimationInterval:1.0/60];
+
+	[director setAnimationInterval:1.0/24];
 	[director setDisplayFPS:YES];
 	
 	
@@ -100,18 +66,17 @@
 	[window addSubview: viewController.view];
 	
 	[window makeKeyAndVisible];
+    
+    // allow multi touch
+    [glView setMultipleTouchEnabled:YES];
 	
 	// Default texture format for PNG/BMP/TIFF/JPEG/GIF images
 	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
 	// You can change anytime.
 	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
-
-	
-	// Removes the startup flicker
-	[self removeStartupFlicker];
 	
 	// Run the intro Scene
-	[[CCDirector sharedDirector] runWithScene: [HelloWorldLayer scene]];
+	[[CCDirector sharedDirector] runWithScene: [TitleLayer scene]];
 }
 
 
